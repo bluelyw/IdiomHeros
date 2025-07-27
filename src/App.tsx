@@ -1,5 +1,5 @@
 // 成语闯关游戏主应用组件
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { loadProgress, saveProgress, GameProgress } from './utils/storage';
 import StartScreen from './components/StartScreen';
 import LevelMap from './components/LevelMap';
