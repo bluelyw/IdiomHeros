@@ -1,6 +1,7 @@
 // 成语闯关游戏主应用组件
 import { useState, useEffect } from 'react';
 import { loadProgress, saveProgress, GameProgress } from './utils/storage';
+import { LEVELS } from './data/levels';
 import StartScreen from './components/StartScreen';
 import LevelMap from './components/LevelMap';
 import LevelPlay from './components/LevelPlay';
@@ -38,6 +39,18 @@ function App() {
       
       // 每5个贴纸获得1个奖牌
       newProgress.medals = Math.floor(newProgress.stickers / 5);
+      
+      // 解锁下一个关卡
+      const currentLevelIndex = LEVELS.findIndex(level => level.id === levelId);
+      if (currentLevelIndex !== -1 && currentLevelIndex < LEVELS.length - 1) {
+        const nextLevelId = LEVELS[currentLevelIndex + 1].id;
+        if (!newProgress.unlocked.includes(nextLevelId)) {
+          newProgress.unlocked.push(nextLevelId);
+          console.log(`解锁新关卡: ${nextLevelId}`);
+        }
+      }
+      
+      console.log(`完成关卡 ${levelId}，当前解锁关卡:`, newProgress.unlocked);
     }
     
     newProgress.score += score;
@@ -60,6 +73,7 @@ function App() {
         medals: 0,
         score: 0
       };
+      console.log('重置进度，初始解锁关卡:', newProgress.unlocked);
       setProgress(newProgress);
       setCurrentPage('start');
     }
