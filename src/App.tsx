@@ -2,6 +2,11 @@
 import { useState, useEffect } from 'react';
 import { loadProgress, saveProgress, GameProgress } from './utils/storage';
 import { LEVELS } from './data/levels';
+import { 
+  trackPageView, 
+  initScrollTracking,
+  initClickTracking
+} from './utils/analytics';
 import StartScreen from './components/StartScreen';
 import LevelMap from './components/LevelMap';
 import LevelPlay from './components/LevelPlay';
@@ -16,6 +21,27 @@ function App() {
   useEffect(() => {
     saveProgress(progress);
   }, [progress]);
+
+  // 页面浏览跟踪
+  useEffect(() => {
+    const pageNames = {
+      start: '开始页面',
+      map: '关卡地图',
+      play: '游戏页面',
+      summary: '学习总结'
+    };
+    
+    trackPageView(pageNames[currentPage]);
+    
+    // 初始化滚动和点击跟踪
+    const cleanupScroll = initScrollTracking(pageNames[currentPage]);
+    const cleanupClick = initClickTracking(pageNames[currentPage]);
+    
+    return () => {
+      cleanupScroll?.();
+      cleanupClick?.();
+    };
+  }, [currentPage]);
 
   // 开始游戏
   const handleStartGame = () => {
